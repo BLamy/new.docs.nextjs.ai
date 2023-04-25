@@ -68,7 +68,7 @@ If either the input or output is invalid, the request will fail with a 400 error
 
 Defining an output using Zod doesn't always work perfectly on 3.5-Turbo but if you safeParse the output and then feed the error back in so GPT can reflect on its mistake it will often come up with the right solution when given a 2nd chance.&#x20;
 
-![](<../../.gitbook/assets/image (3).png>)
+<figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 
 #### Example
 

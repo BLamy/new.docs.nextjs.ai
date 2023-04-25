@@ -31,7 +31,7 @@ You can take advantage of [github issue templates](https://docs.github.com/en/co
 
 {% tabs %}
 {% tab title="Screenshot" %}
-![](.gitbook/assets/image.png)
+<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 {% endtab %}
 
 {% tab title="Code" %}
@@ -79,7 +79,7 @@ body:
 
 When a user creates an issue using the above template, a github action will run the code generation and submit a PR with the generated code to the repository. This will trigger a new preview build to be created in the PR and you can play around with what the system would be like if those rules were in place. If everything seems fine with the PR demo, you can merge the PR and the new rules will shipped out to production.&#x20;
 
-![](<.gitbook/assets/image (1).png>)
+<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 ### Use a schema to validate the generated code
 
@@ -149,4 +149,4 @@ export type Errors = "unknown role" | "unknown action" | "unknown rule" | "unkno
 ```
 {% endcode %}
 
-![](<.gitbook/assets/image (2).png>)
+<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
