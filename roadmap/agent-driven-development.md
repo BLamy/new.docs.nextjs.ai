@@ -1,7 +1,5 @@
 ---
-description: >-
-  A Process Framework for the AI-Enabled Age, Collaborate Smarter, Deliver
-  Faster.
+description: An Agile Process Framework for the AI-Enabled Age.
 ---
 
 # Agent Driven Development
