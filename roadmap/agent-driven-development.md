@@ -4,7 +4,7 @@ description: >-
   Faster.
 ---
 
-# AI-Driven Development
+# Agent Driven Development
 
 In this page, we discuss how to set up your CI/CD pipeline to take full advantage of the power of AI to write code.&#x20;
 
