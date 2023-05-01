@@ -1,5 +1,11 @@
 # Components
 
-Nextjs.ai is working on creating a set of highly accessible Components that can be used in any Next.js project. These components are built with React Server Compoennts and provide a fullstack solution for building accessible AI powered web apps.
+Nextjs.ai is working on creating a set of highly accessible Components that can be used in any Next.js project.&#x20;
+
+These components are built with React Server Components and provide a fullstack solution for building accessible AI powered web apps.
+
+All components will allow you to either provide a resolver to make API calls yourself or by default it will use window.io and allow the user to pick their model.
+
+We will try to create equivalents for each gradio component. [https://gradio.app/docs/](https://gradio.app/docs/)
 
 If you have any questions or suggestions, please reach out to us in our [Discord](https://discord.gg/2F2bHSma) or [Twitter](https://twitter.com/nextjs\_ai).
