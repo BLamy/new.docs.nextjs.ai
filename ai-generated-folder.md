@@ -75,17 +75,11 @@ body:
 {% endtab %}
 {% endtabs %}
 
-### Reviewing generated code in a PR
-
-When a user creates an issue using the above template, a github action will run the code generation and submit a PR with the generated code to the repository. This will trigger a new preview build to be created in the PR and you can play around with what the system would be like if those rules were in place. If everything seems fine with the PR demo, you can merge the PR and the new rules will shipped out to production.&#x20;
-
-<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
-
 ### Use a schema to validate the generated code
 
 When generating code, it is best practice to use a schema to validate the generated code.
 
-For instance, if you were generating a set of rules for an access control system, you could use a zod schema to validate the rules.
+For instance, if you were generating a set of rules for an access control system, you could use a zod schema to validate the rules. If GPT ever outputs something that doesn't fit this format you can feed the error back into GPT for reflection.
 
 ```typescript
 import { z } from 'zod';
@@ -100,6 +94,20 @@ export const rulesSchema = z.object({
     })),
 });
 ```
+
+### Use automated test to validate generated code
+
+Running a test suite can also be used to create guardrails for the code GPT is generating. In my experience test are best run on PR creation and can be updated from a PR comment. Test should not be updated on the first pass though. Users should have to explicitly ask to have test fixed and the context surrounding the test fix.&#x20;
+
+### Reviewing generated code in a PR
+
+When a user creates an issue using the above template, a github action will run the code generation and submit a PR with the generated code to the repository. This will trigger a new preview build to be created in the PR and you can play around with what the system would be like if those rules were in place. If everything seems fine with the PR demo, you can merge the PR and the new rules will shipped out to production.&#x20;
+
+<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+
+### Ephemeral Environments for PRs
+
+PRs should be staged using something like Vercel/Netlify PR preview and a visual diff regression testing tool like chromatic.&#x20;
 
 ## Example
 
