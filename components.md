@@ -12,4 +12,6 @@ We will try to create equivalents for each gradio component. [https://gradio.app
 
 Components are organized using an [atomic design](https://atomicdesign.bradfrost.com/chapter-2/)
 
+<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+
 If you have any questions or suggestions, please reach out to us in our [Discord](https://discord.gg/2F2bHSma) or [Twitter](https://twitter.com/nextjs\_ai).
