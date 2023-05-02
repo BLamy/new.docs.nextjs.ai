@@ -17,21 +17,15 @@ In this page, we discuss how to set up your CI/CD pipeline to take full advantag
   * Update test&#x20;
   * Update storybooks
 
-
-
-### Github Issues -> Github Actions - GPT Code Generation
-
-You can take advantage of [github issue templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#creating-issue-forms) to create forms that trigger code generation.
+### Github Issues Template
 
 {% tabs %}
 {% tab title="Screenshot" %}
-<figure><img src="../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 {% endtab %}
 
-{% tab title="Github Issue template" %}
-
-
-{% code title="" lineNumbers="true" %}
+{% tab title="Code" %}
+{% code title="" overflow="wrap" lineNumbers="true" %}
 ```yaml
 name: Create Atom Component
 description: Fill out this form to create a new component
@@ -56,6 +50,16 @@ body:
     required: true
 ```
 {% endcode %}
+{% endtab %}
+{% endtabs %}
+
+### Github Action
+
+You can take advantage of [github issue templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#creating-issue-forms) to create forms that trigger code generation.
+
+{% tabs %}
+{% tab title="Screenshot" %}
+<figure><img src="../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
 {% endtab %}
 
 {% tab title="Github Action" %}
@@ -163,7 +167,7 @@ husky pre-commit hooks can be added to format code using formatters like prettie
 
 When a user creates an issue using the above template, a github action will run the code generation and submit a PR with the generated code to the repository. This will trigger a new preview build to be created in the PR and you can play around with what the system would be like if those rules were in place. If everything seems fine with the PR demo, you can merge the PR and the new rules will be shipped out to production.&#x20;
 
-<figure><img src="../.gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 ### Ephemeral Environments for PRs
 
