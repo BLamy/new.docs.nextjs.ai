@@ -4,21 +4,21 @@ description: An Agile Process Framework for the AI-Enabled Age.
 
 # Agent Driven Development
 
-In this page, we discuss how to set up your CI/CD pipeline to take full advantage of the power of AI to write code.&#x20;
+Welcome to Agent Driven Development (ADD), a new agile framework that harnesses the power of AI to revolutionize the software development process. In this post, we'll explore how to set up a CI/CD pipeline to leverage AI to write code, generate storybooks, and streamline your development process.
 
-* Github Issue Templates provide structure to issues and add labels
-* When issues are created a CI pipeline containing a system prompt is triggered
-  * That pipeline calls out to GPT4 to generate code
-  * Calls out to GPT4 to generate storybooks
-  * Opens a pull request white the generated code
-* PR Previews allow you to view changes
-  * Visual testing tools like chromatic create visual diffs of changes
-* PR comment to revise pull request
-  * Revise changes&#x20;
-  * Update test&#x20;
-  * Update storybooks
+#### The ADD Process
+
+1. **Structured Github Issues**: ADD uses Github Issue Templates to bring structure to your issues and automatically apply labels.
+2. **CI Pipeline with AI Integration**: When issues are created, a CI pipeline is triggered, which calls GPT-4 to generate code, create storybooks, and open a pull request with the generated code.
+3. **PR Previews**: Review changes in your codebase visually through PR previews.
+4. **Visual Testing**: Utilize visual testing tools like Chromatic to create visual diffs of changes.
+5. **Comments to Revise Changes**: Update tests, storybooks, and revise changes directly by commenting
+
+## Key Components of Agent Driven Development
 
 ### Github Issues Template
+
+To initiate the process, we'll leverage [GitHub issue templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#creating-issue-forms) to create forms that trigger code generation.
 
 {% tabs %}
 {% tab title="Screenshot" %}
@@ -184,11 +184,7 @@ jobs:
 
 ### Use a schema to validate the generated code
 
-When generating code, it is best practice to use a schema to validate the generated code.
-
-For instance, If I were having it generate typescript I may run tsc to validate it's output.
-
-If you were generating a set of rules for an access control system, you could use a zod schema to validate the rules. If GPT ever outputs something that doesn't fit this format you can feed the error back into GPT for reflection.
+To ensure the generated code meets your standards, it's a good practice to use a schema to validate it. For example, if you're generating TypeScript code, you might use the TypeScript compiler to validate the output. If the generated code doesn't meet the schema, you can feed that information back into GPT for reflection and improvement.
 
 ```typescript
 import { z } from 'zod';
@@ -216,19 +212,21 @@ husky pre-commit hooks can be added to format code using formatters like prettie
 
 ### Reviewing generated code in a PR
 
-When a user creates an issue using the above template, a github action will run the code generation and submit a PR with the generated code to the repository. This will trigger a new preview build to be created in the PR and you can play around with what the system would be like if those rules were in place. If everything seems fine with the PR demo, you can merge the PR and the new rules will be shipped out to production.&#x20;
+When a user creates an issue using the Github Issue Template, a Github Action generates code and creates a pull request. This pull request can be previewed, allowing you to play around with what the system would be like if those rules were in place. If everything looks good, you can merge the pull request, and the new code will be shipped out to production.
 
-<figure><img src=".gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1) (1).png" alt=""><figcaption><p>AI Generated Pull Request</p></figcaption></figure>
 
 ### Ephemeral Environments for PRs
 
-PRs should be staged using something like Vercel/Netlify PR preview
+PRs should be staged using something like Vercel/Netlify PR preview. This allows for previewing changes in an ephemeral environment before merging to production.
 
 {% embed url="https://assets.vercel.com/video/upload/vc_auto/contentful/video/e5382hct74si/1zUv3vaXZhmikxuHyZsDbr/2de0c8108f9ef9316ca01a98cea61c57/Vercel-PreviewCommentsLaunch-Video__2_.mp4" %}
+Vercel PR PReviews
+{% endembed %}
 
 ### &#x20;Visual Regression testing
 
-Use a tool like chromatic for visual regression testing.&#x20;
+Using a tool like Chromatic for visual regression testing helps ensure that changes to the UI don't break anything. Chromatic allows you to review changes and approve them before merging to production.
 
 <figure><img src=".gitbook/assets/chromatic-visual-change-approval.gif" alt=""><figcaption><p>Review Changes with Chromatic</p></figcaption></figure>
 
@@ -236,7 +234,11 @@ Use a tool like chromatic for visual regression testing.&#x20;
 
 ### Comments in Ephemeral Environments drive WYSIWYG editor.
 
+Finally, using comments in ephemeral environments can help drive a WYSIWYG editor. This allows users to visually edit components and see changes in real-time, making it easier to iterate on designs and quickly prototype new features.
+
 {% embed url="https://assets.vercel.com/video/upload/vc_auto/contentful/video/e5382hct74si/1ubs3OKMuzdEdDoTBePlZV/5f66954ec71f5c338f226feca5a92278/Visual-editing-export-03.mp4" %}
+Vercel WYSIWYG Editor
+{% endembed %}
 
 
 
