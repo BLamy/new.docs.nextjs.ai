@@ -8,7 +8,7 @@ Welcome to Agent Driven Development (ADD), a new agile framework that harnesses 
 
 #### The ADD Process
 
-1. **Structured Github Issues**: ADD uses Github Issue Templates to bring structure to your issues and automatically apply labels.
+1. **Structured Github Issues**: ADD uses [GitHub issue templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#creating-issue-forms) to bring structure to your issues and automatically apply labels.
 2. **CI Pipeline with AI Integration**: When issues are created, a CI pipeline is triggered, which calls GPT-4 to generate code, create storybooks, and open a pull request with the generated code.
 3. **PR Previews**: Review changes in your codebase visually through PR previews.
 4. **Visual Testing**: Utilize visual testing tools like Chromatic to create visual diffs of changes.
