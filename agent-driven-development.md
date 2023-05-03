@@ -7,9 +7,10 @@ description: An Agile Process Framework for the AI-Enabled Age.
 In this page, we discuss how to set up your CI/CD pipeline to take full advantage of the power of AI to write code.&#x20;
 
 * Github Issue Templates provide structure to issues and add labels
-* When issues are created a CI pipeline which contains a system prompt
+* When issues are created a CI pipeline containing a system prompt is triggered
   * That pipeline calls out to GPT4 to generate code
-  * Opens a pull request whith the generated code
+  * Calls out to GPT4 to generate storybooks
+  * Opens a pull request white the generated code
 * PR Previews allow you to view changes
   * Visual testing tools like chromatic create visual diffs of changes
 * PR comment to revise pull request
