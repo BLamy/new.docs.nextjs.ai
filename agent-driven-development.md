@@ -21,7 +21,7 @@ In this page, we discuss how to set up your CI/CD pipeline to take full advantag
 
 {% tabs %}
 {% tab title="Screenshot" %}
-<figure><img src="../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 {% endtab %}
 
 {% tab title="Code" %}
@@ -59,7 +59,7 @@ You can take advantage of [github issue templates](https://docs.github.com/en/co
 
 {% tabs %}
 {% tab title="Screenshot" %}
-<figure><img src="../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
 {% endtab %}
 
 {% tab title="Github Action" %}
@@ -167,14 +167,29 @@ husky pre-commit hooks can be added to format code using formatters like prettie
 
 When a user creates an issue using the above template, a github action will run the code generation and submit a PR with the generated code to the repository. This will trigger a new preview build to be created in the PR and you can play around with what the system would be like if those rules were in place. If everything seems fine with the PR demo, you can merge the PR and the new rules will be shipped out to production.&#x20;
 
-<figure><img src="../.gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 ### Ephemeral Environments for PRs
 
-PRs should be staged using something like Vercel/Netlify PR preview and a visual diff regression testing tool like chromatic.&#x20;
-
-<figure><img src="../.gitbook/assets/chromatic-visual-change-approval.gif" alt=""><figcaption><p>Review Changes with Chromatic</p></figcaption></figure>
-
-### Comments in Ephemeral Environments help scope context on issues
+PRs should be staged using something like Vercel/Netlify PR preview
 
 {% embed url="https://assets.vercel.com/video/upload/vc_auto/contentful/video/e5382hct74si/1zUv3vaXZhmikxuHyZsDbr/2de0c8108f9ef9316ca01a98cea61c57/Vercel-PreviewCommentsLaunch-Video__2_.mp4" %}
+
+### &#x20;Visual Regression testing
+
+Use a tool like chromatic for visual regression testing.&#x20;
+
+<figure><img src=".gitbook/assets/chromatic-visual-change-approval.gif" alt=""><figcaption><p>Review Changes with Chromatic</p></figcaption></figure>
+
+###
+
+### Comments in Ephemeral Environments drive WYSIWYG editor.
+
+{% embed url="https://assets.vercel.com/video/upload/vc_auto/contentful/video/e5382hct74si/1ubs3OKMuzdEdDoTBePlZV/5f66954ec71f5c338f226feca5a92278/Visual-editing-export-03.mp4" %}
+
+
+
+
+
+
+
