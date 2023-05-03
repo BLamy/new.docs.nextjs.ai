@@ -1,6 +1,7 @@
 # Table of contents
 
 * [Getting Started](README.md)
+* [Agent Driven Development](agent-driven-development.md)
 * [Prompts](prompts/README.md)
   * [Basic Prompts](prompts/basic-prompts.md)
   * [Guardrails](prompts/guardrails.md)
@@ -20,4 +21,3 @@
     * [useSqlite](roadmap/memory/usesqlite.md)
     * [JWTMemory](roadmap/memory/jwtmemory.md)
     * [Vercel Storage Examples](roadmap/memory/vercel-storage-examples.md)
-  * [Agent Driven Development](roadmap/agent-driven-development.md)
