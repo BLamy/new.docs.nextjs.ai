@@ -25,7 +25,7 @@ In this page, we discuss how to set up your CI/CD pipeline to take full advantag
 {% endtab %}
 
 {% tab title="Code" %}
-{% code title="" overflow="wrap" lineNumbers="true" %}
+{% code title=".github/ISSUE_TEMPLATES/create_atom.yml" overflow="wrap" lineNumbers="true" %}
 ```yaml
 name: Create Atom Component
 description: Fill out this form to create a new component
@@ -65,8 +65,8 @@ You can take advantage of [github issue templates](https://docs.github.com/en/co
 {% tab title="Github Action" %}
 
 
-{% code title="" overflow="wrap" lineNumbers="true" %}
-```yaml
+{% code title=".github/workflows/create_atom.yml" overflow="wrap" lineNumbers="true" %}
+````yaml
 name: Create Atom Component
 on:
   issues:
@@ -77,56 +77,106 @@ jobs:
     if: contains(github.event.issue.labels.*.name, 'create-atom')
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: Print issue information
+        id: setup
         run: |
-          echo "Issue title: ${{ github.event.issue.title }}"
-          echo "Issue body: ${{ github.event.issue.body }}"
-          echo "Issue author: ${{ github.event.issue.user.login }}"
-      
-      - name: Call API and update file
-        id: api_call
+          ORG_NAME=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f1)
+          echo "::set-output name=ORG_NAME::$ORG_NAME"
+          REPO_NAME=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)
+          echo "::set-output name=REPO_NAME::$REPO_NAME"
+          echo "Creating Atom Component for: ${ORG_NAME}/${REPO_NAME}"
+
+          SYSTEM_PROMPT="You are a react component generator I will feed you a markdown file that contains a component name and description your job is to create a nextjs component using typescript and tailwind. Please include a default export & export the Prop as a typescript type. Do not add any additional libraries or dependencies. Your response should only have 1 tsx code block which is the implementation of the component."
+          SYSTEM_MESSAGE='{"role":"system","content":"'"$SYSTEM_PROMPT"'"}'
+          echo "SYSTEM: $SYSTEM_PROMPT"
+          echo "::set-output name=SYSTEM_MESSAGE::$SYSTEM_MESSAGE"
+
+          ESCAPED_ISSUE_BODY=$(echo "${{ github.event.issue.body }}" | awk '{printf "%s\\n", $0}')
+          USER_MESSAGE='{"role":"user","content":"'"$ESCAPED_ISSUE_BODY"'"}'
+          echo "USER: $ESCAPED_ISSUE_BODY"
+          echo "::set-output name=USER_MESSAGE::$USER_MESSAGE"
+
+      - name: Create Component (GPT 3.5 Turbo)
+        id: create_component_api_call
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          ESCAPED_ISSUE_BODY=$(echo "${{ github.event.issue.body }}" | awk '{printf "%s\\n", $0}')
           RESPONSE=$(curl "https://api.openai.com/v1/chat/completions" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ env.OPENAI_API_KEY }}" \
             -d '{
               "model": "gpt-3.5-turbo",
-              "messages": [{"role":"system","content":"You are a react component generator I will feed you a markdown file that contains a component name and description your job is to create a nextjs component using typescript and tailwind do not add any additional libraries or dependencies. Remember if you import useState, useEffect, or useRef you must prefix the file with \"use client\". Your response should only have 1 tsx code block which is the implementation of the component. Do not wrap the code in anything."},{"role": "user", "content": "'"$ESCAPED_ISSUE_BODY"'"}]
+              "messages": [${{ steps.setup.outputs.SYSTEM_MESSAGE }}, ${{ steps.setup.outputs.USER_MESSAGE }}]
             }' \
             --fail)
-          echo "::set-output name=response::$RESPONSE"
+          RESPONSE_BODY=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+          CODE_BLOCK=$(echo -e "$RESPONSE_BODY" | sed -n '/^```[a-zA-Z]*$/,/^```$/p' | sed '/^```[a-zA-Z]*\|^```$/d')
+          ESCAPED_CODE_BLOCK=$(echo -e "$CODE_BLOCK" | sed 's/"/\\"/g; s/`/\\`/g; s/\$/\\$/g' | awk '{printf "%s\\n", $0}')
+          echo "::set-output name=response::$ESCAPED_CODE_BLOCK"
+          echo "ASSISTANT: $ESCAPED_CODE_BLOCK"
+          COMPONENT_NAME=$(echo -e "$RESPONSE_BODY" | sed -n 's/.*export default \([a-zA-Z_$][0-9a-zA-Z_$]*\).*/\1/p')
+          echo "$COMPONENT_NAME"
+          echo "::set-output name=COMPONENT_NAME::$COMPONENT_NAME"
 
-
-      - name: Create and switch to new branch
+      - name: Create Storybook Follow up Prompt
+        id: followup    
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          echo "ASSISTANT: ${{ steps.create_component_api_call.outputs.response }}"
+          ESCAPED_RESPONSE=$(echo "${{ steps.create_component_api_call.outputs.response }}" | sed 's/`/\\\\`/g' | sed "s/'/\\'/g" | sed 's/"/\\"/g')
+          ASSISTANT_MESSAGE='{"role":"assistant","content":"'"$ESCAPED_RESPONSE"'"}'
+          echo "::set-output name=ASSISTANT_MESSAGE::$ASSISTANT_MESSAGE"
+          STORYBOOK_FOLLOW_UP_PROMPT="Can you create a storybook for the above component using import ${{ steps.create_component_api_call.outputs.COMPONENT_NAME }}, { ${{ steps.create_component_api_call.outputs.COMPONENT_NAME }}Props } from '../${{ steps.create_component_api_call.outputs.COMPONENT_NAME }}'"
+          STORYBOOK_FOLLOW_UP_MESSAGE='{ "role": "user", "content":"'"$STORYBOOK_FOLLOW_UP_PROMPT"'"}'
+          echo "::set-output name=STORYBOOK_FOLLOW_UP_MESSAGE::$STORYBOOK_FOLLOW_UP_MESSAGE"
+
+      - name: Create Storybook (GPT 3.5 Turbo)
+        id: create_storybook_api_call
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          RESPONSE=$(curl "https://api.openai.com/v1/chat/completions" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ env.OPENAI_API_KEY }}" \
+            -d '{
+              "model": "gpt-3.5-turbo",
+              "messages": [${{ steps.setup.outputs.SYSTEM_MESSAGE }}, ${{ steps.setup.outputs.USER_MESSAGE }},${{ steps.followup.outputs.ASSISTANT_MESSAGE }},${{ steps.followup.outputs.STORYBOOK_FOLLOW_UP_MESSAGE }}]
+            }' \
+            --fail)
+          RESPONSE_BODY=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
+          echo "$RESPONSE_BODY"
+          echo "----------------------"
+          CODE_BLOCK=$(echo -e "$RESPONSE_BODY" | sed -n '/^```[a-zA-Z]*$/,/^```$/p' | sed '/^```[a-zA-Z]*\|^```$/d')
+          echo "$CODE_BLOCK"
+          echo "----------------------"
+          ESCAPED_CODE_BLOCK=$(echo -e "$CODE_BLOCK" | sed 's/"/\\"/g; s/`/\\`/g; s/\$/\\$/g' | awk '{printf "%s\\n", $0}')
+          echo "$ESCAPED_CODE_BLOCK"
+          echo "::set-output name=response::$ESCAPED_CODE_BLOCK"
+          COMPONENT_NAME=$(echo -e "$RESPONSE_BODY" | sed -n 's/.*export default \([a-zA-Z_$][0-9a-zA-Z_$]*\).*/\1/p')
+          echo "::set-output name=COMPONENT_NAME::$COMPONENT_NAME"
+
+      # TODO Split Update file in git up into multiple steps
+      - name: Update file in git
+        env:
+          GH_API_KEY: ${{ secrets.GH_API_KEY }}
+        run: |
+          git clone https://${{ env.GH_API_KEY }}@github.com/${{ steps.setup.outputs.ORG_NAME }}/${{ steps.setup.outputs.REPO_NAME }}.git
+          cd nextjs-ai-starter
+          git config --global user.email "brettlamy@gmail.com"
+          git config --global user.name "Brett Lamy"
           git checkout -b issue-${{ github.event.issue.number }}-update
-
-      - name: Update file with API response
-        run: |
-          echo "${{ steps.api_call.outputs.response }}" > src/components/atoms/Search.tsx
+          echo -e "${{ steps.create_component_api_call.outputs.response }}" > src/components/atoms/${{ steps.create_component_api_call.outputs.COMPONENT_NAME }}.tsx
+          echo -e "${{ steps.create_storybook_api_call.outputs.response }}" > src/components/atoms/__tests__/${{ steps.create_component_api_call.outputs.COMPONENT_NAME }}.stories.tsx
+          npm run prettier
           git add .
-          git commit -m "Update file with API response"
-
-      - name: Push changes to the new branch
-        run: git push origin issue-${{ github.event.issue.number }}-update
+          git commit -m "${{ github.event.issue.title }} - closes #${{ github.event.issue.number }}"
+          git push origin issue-${{ github.event.issue.number }}-update
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GH_API_KEY }}
-          title: "Update file with API response for issue #${{ github.event.issue.number }}"
-          body: "This PR updates the file with the API response for issue #${{ github.event.issue.number }}."
-          branch: issue-${{ github.event.issue.number }}-update
-
-```
+        env:
+          GH_API_KEY: ${{ secrets.GH_API_KEY }}
+        run: |
+          curl https://api.github.com/repos/${{ steps.setup.outputs.ORG_NAME }}/${{ steps.setup.outputs.REPO_NAME }}/pulls -H "Authorization: token ${{ env.GH_API_KEY }}" -H "Accept: application/vnd.github+json" -X POST -d '{"title":"${{ github.event.issue.title }}", "body":"${{ steps.setup.outputs.ESCAPED_ISSUE_BODY }}", "head":"issue-${{ github.event.issue.number }}-update", "base":"main"}'
+````
 {% endcode %}
 {% endtab %}
 {% endtabs %}
